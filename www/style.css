@@ -1,0 +1,13 @@
+.tabbable > .nav > li > a { 
+                    color: #000000; 
+                    }
+
+.tabbable > .nav > li[class = active] > a {
+                    background-color: #0072B2;
+                    color: #FFFFFF;
+                    }
+                    
+.btn-default {
+  background-color: #0072B2;
+  color: #FFFFFF;
+}

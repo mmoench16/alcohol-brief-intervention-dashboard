@@ -1,0 +1,16 @@
+# History files
+.Rhistory
+
+# Session Data files
+.RData
+
+# RStudio files
+.Rproj.user/
+
+# Other project folder/files to ignore
+
+Resources/
+rsconnect/
+ui1.R
+www/logos.gif
+.Rproj.user
