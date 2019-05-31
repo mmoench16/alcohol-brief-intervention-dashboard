@@ -11,7 +11,7 @@ fluidPage(
   ),
   
   titlePanel(
-    "Alcohol Brief Interventions - Dashboard"
+    "Alcohol Brief Interventions"
   ),
   
   mainPanel(
@@ -23,7 +23,7 @@ fluidPage(
       
       navbarMenu("ABIs Delivered",
                  icon = icon("chart-bar"),
-                 tabPanel("Total ABIs Delivered", br(), {selectInput(
+                 tabPanel("Total ABIs Delivered", br(), div({selectInput(
                    inputId = "board",
                    label = "Select NHS Board(s)",
                    choices = list("All" = "All", "Ayrshire & Arran" = "Ayrshire & Arran", "Borders" = "Borders",
@@ -35,9 +35,11 @@ fluidPage(
                                   "Shetland" = "Shetland", "Tayside" = "Tayside",
                                   "Western Isles" = "Western Isles", "Scotland" = "Scotland"),
                    selected = "All"
-                 )}, plotlyOutput("plot1"), br(), htmlOutput("text1"), 
-                          br(), actionButton("actB1", "Hide / Show Table"), downloadButton("downloadData1", "Download Data"), shinyjs::hidden(DT::dataTableOutput("table1"))),
-                 tabPanel("ABIs Delivered vs Standard", br(), {selectInput(
+                 )}, style="display: inline-block; vertical-align:top;"), 
+                          div(downloadButton("downloadData1", "Download Data"), style="display: inline-block; padding-top: 25px;"), 
+                          div(downloadButton("downloadGlossary1", "Download Glossary"),style="display: inline-block; padding-top: 25px;"), 
+                          plotlyOutput("plot1"), br(), htmlOutput("text1"), br(), actionButton("actB1", "Show / Hide Table"), shinyjs::hidden(DT::dataTableOutput("table1"))),
+                 tabPanel("ABIs Delivered vs Standard", br(), div({selectInput(
                    inputId = "board2",
                    label = "Select NHS Board(s)",
                    choices = list("All" = "All", "Ayrshire & Arran" = "Ayrshire & Arran", "Borders" = "Borders",
@@ -49,21 +51,25 @@ fluidPage(
                                   "Shetland" = "Shetland", "Tayside" = "Tayside",
                                   "Western Isles" = "Western Isles", "Scotland" = "Scotland"),
                    selected = "All"
-                 )}, plotlyOutput("plot2"), br(), htmlOutput("text2"), 
-                          br(), actionButton("actB2", "Hide / Show Table"), downloadButton("downloadData2", "Download Data"), shinyjs::hidden(DT::dataTableOutput("table2")))),
+                 )}, style="display: inline-block; vertical-align:top;"), 
+                          div(downloadButton("downloadData2", "Download Data"), style="display: inline-block; padding-top: 25px;"), 
+                          div(downloadButton("downloadGlossary2", "Download Glossary"),style="display: inline-block; padding-top: 25px;"), 
+                          plotlyOutput("plot2"), br(), htmlOutput("text2"), br(), actionButton("actB2", "Show / Hide Table"), shinyjs::hidden(DT::dataTableOutput("table2")))),
 
       navbarMenu("ABIs by Setting",
                  icon = icon("chart-bar"),
-                 tabPanel("Priority & Wider Settings", br(), plotlyOutput("plot3"), br(), htmlOutput("text3"), 
-                          br(), actionButton("actB3", "Hide / Show Table"), downloadButton("downloadData3", "Download Data"), shinyjs::hidden(DT::dataTableOutput("table3"))),
-                 tabPanel("All Settings", plotlyOutput("plot4"), br(), htmlOutput("text4"), 
-                          br(), actionButton("actB4", "Hide / Show Table"), downloadButton("downloadData4", "Download Data"), shinyjs::hidden(DT::dataTableOutput("table4"))),
-                 tabPanel("Wider Settings", br(), fluidRow(column(width = 6, plotlyOutput("plot5")), 
-                                                           column(width = 6, plotlyOutput("plot6"))),
-                          br(), actionButton("actB5", "Hide / Show Table"), downloadButton("downloadData5", "Download Data"), shinyjs::hidden(DT::dataTableOutput("table5_6"))),
-                 tabPanel("Criminal Justice Settings", br(), fluidRow(column(width = 6, plotlyOutput("plot7")),
-                                                                      column(width = 6, plotlyOutput("plot8"))),
-                          br(), actionButton("actB6", "Hide / Show Table"), downloadButton("downloadData6", "Download Data"), DT::dataTableOutput("table7_8"))),
+                 tabPanel("Priority & Wider Settings", br(), downloadButton("downloadData3", "Download Data"), downloadButton("downloadGlossary3", "Download Glossary"), br(), 
+                          plotlyOutput("plot3"), br(), htmlOutput("text3"), br(), actionButton("actB3", "Show / Hide Table"), shinyjs::hidden(DT::dataTableOutput("table3"))),
+                 tabPanel("All Settings", br(), downloadButton("downloadData4", "Download Data"), downloadButton("downloadGlossary4", "Download Glossary"), br(), 
+                          plotlyOutput("plot4"), br(), htmlOutput("text4"), br(), actionButton("actB4", "Show / Hide Table"), shinyjs::hidden(DT::dataTableOutput("table4"))),
+                 tabPanel("Wider Settings", br(), downloadButton("downloadData5", "Download Data"), downloadButton("downloadGlossary5", "Download Glossary"), 
+                          fluidRow(column(width = 6, plotlyOutput("plot5")), 
+                                   column(width = 6, plotlyOutput("plot6"))),
+                          br(), actionButton("actB5", "Show / Hide Table"), shinyjs::hidden(DT::dataTableOutput("table5_6"))),
+                 tabPanel("Criminal Justice Settings", br(), downloadButton("downloadData6", "Download Data"), downloadButton("downloadGlossary6", "Download Glossary"), 
+                          fluidRow(column(width = 6, plotlyOutput("plot7")),
+                                   column(width = 6, plotlyOutput("plot8"))),
+                          br(), actionButton("actB6", "Show / Hide Table"), DT::dataTableOutput("table7_8"))),
       
       tabPanel("Glossary", icon = icon("question-circle"), br(), htmlOutput("glossary"))
     ),

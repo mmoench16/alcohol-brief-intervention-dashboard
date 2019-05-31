@@ -18,11 +18,17 @@ Data3 <- readRDS("Resources/Data/Data3.rds")
 Data4 <- readRDS("Resources/Data/Data4.rds")
 Data5 <- readRDS("Resources/Data/Data5.rds")
 Data6 <- readRDS("Resources/Data/Data6.rds")
-colours15 <- c("#08306b", "#08519c", "#2171b5",
-               "#4292c6", "#6baed6", "#3f007d",
-               "#54278f", "#6a51a3", "#807dba",
-               "#9e9ac8", "#00441b", "#006d2c",
-               "#238b45", "#41ab5d", "#74c476")
+
+# Colour-blind friendly colours, recommended by Tina Fu, http://mkweb.bcgsc.ca/biovis2012/color-blindness-palette.png
+colours15 <- c("#000000", "#004949", "#009292",
+               "#FF6DB6", "#FFB6DB", "#490092",
+               "#006DDB", "#B66DFF", "#6DB6FF",
+               "#B6DBFF", "#920000", "#924900",
+               "#DB6D00", "#24FF24", "#FFFF6D")
+
+# Blues as per Chart & Dashboard guidance
+
+bluesISD <- c("#004785", "#00a2e5", "#4c7ea9", "#99daf5", "#4cbeed")
 
 
 shinyServer(function(input, output, session) {
@@ -32,7 +38,7 @@ shinyServer(function(input, output, session) {
          style='border-bottom: 1px dotted black;'>Alcohol Brief Interventions</strong> (ABIs) in Scotland.
          It visualises and explores the delivery of ABIs in the context of NHS Scotland's individual Health Boards
          and their respective delivery targets, Priority Settings, Wider Settings and Criminal Justice Settings.
-         The dashboard covers ABIs for the financial years 2008/09 to 2017/18.</p>
+         The dashboard covers ABIs for the financial years 2008/09 to 2018/19.</p>
          
          <p>For more information please view one of the following:</p>
          <ul>
@@ -44,20 +50,21 @@ shinyServer(function(input, output, session) {
          <p>This dashboard follows the structure given in the aforementioned <em>Data Tables</em>, i.e.:</p>"), 
     tags$ul(
       tags$li(actionLink("tab1", "Total ABIs Delivered:"), "Total number of ABIs delivered in comparison with LDP standard, by NHS Board"),
-      tags$li(actionLink("tab2", "ABIs Delivered vs Standard:"), "ABIs delivered against standard, by NHS board; financial year 2017/18"),
+      tags$li(actionLink("tab2", "ABIs Delivered vs Standard:"), "ABIs delivered against standard, by NHS board; financial year 2018/19"),
       tags$li(actionLink("tab3", "Priority & Wider Settings:"), "Number of ABIs delivered across Scotland split by Priority and Wider Settings"),
       tags$li(actionLink("tab4", "All Settings:"), "Number and percentage of ABIs delivered within each Setting; by NHS Board"),
       tags$li(actionLink("tab5_6", "Wider Settings:"), "Number and percentage of ABIs delivered in Wider Settings in Scotland"),
-      tags$li(actionLink("tab7_8", "Criminal Justice Settings:"), "Number and percentage of ABIs delivered in Criminal Justice Settings in Scotland")),
+      tags$li(actionLink("tab7_8", "Criminal Justice Settings:"), "Number and percentage of ABIs delivered in Criminal Justice Settings in Scotland and by NHS Board")),
     HTML("<br>
+         <p>If you experience any problems using this dashboard or have further questions relating to the data, please contact us at: <a href='mailto:NSS.isdsubstancemisuse@nhs.net'>NSS.isdsubstancemisuse@nhs.net</a></p>
          <br>
          <p><strong>Source:</strong> ISD Scotland</p>
-         <p><strong>Updated:</strong> August 2018</p>")
+         <p><strong>Updated:</strong> June 2019</p>")
   )})
 
   output$plot1 <- renderPlotly({
     
-    ggplotly(
+    style(ggplotly(
       if (req(input$board) == "All") {
         
         ABIs %>%
@@ -67,7 +74,7 @@ shinyServer(function(input, output, session) {
             scale_color_manual(values = colours15) +
             theme_minimal() +
             scale_x_discrete(expand = c(0.03,0.03)) +
-            labs(title = "Total number of ABIs delivered across all NHS Boards (2008/09 - 2017/18)", x = "Financial Year", y = "ABIs delivered") +
+            labs(title = "Total number of ABIs delivered across all NHS Boards (2008/09 - 2018/19)", x = "Financial Year", y = "ABIs delivered") +
             theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
                   axis.text.y = element_text(size = 8),
                   axis.title = element_text(size = 9, face = "bold"),
@@ -78,10 +85,10 @@ shinyServer(function(input, output, session) {
           group_by(FY) %>%
           summarise(SumDelivered = sum(Delivered)) %>%
           ggplot(aes(x = FY, y = SumDelivered, group = 1)) +
-            geom_line(size = 1, color="#0066ff") + 
+            geom_line(size = 1, color="#004785") + 
             theme_minimal() +
             scale_x_discrete(expand = c(0.03,0.03)) +
-            labs(title = "Total number of ABIs delivered on national level (2008/09 - 2017/18)", x = "Financial Year", y = "ABIs delivered") +
+            labs(title = "Total number of ABIs delivered on national level (2008/09 - 2018/19)", x = "Financial Year", y = "ABIs delivered") +
             theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
                   axis.text.y = element_text(size = 8),
                   axis.title = element_text(size = 9, face = "bold"),
@@ -91,17 +98,17 @@ shinyServer(function(input, output, session) {
         ABIs %>%
           filter(Board == input$board) %>%
           ggplot(aes(x = FY, y = Delivered, group = Board)) +
-          geom_line(size = 1, color="#0066ff") +
+          geom_line(size = 1, color="#004785") +
           theme_minimal() +
           scale_x_discrete(expand = c(0.03,0.03)) +
-          labs(title = paste0("Total number of ABIs delivered in ", input$board, " (2008/09 - 2017/18)"), x = "Financial Year", y = "ABIs delivered") +
+          labs(title = paste0("Total number of ABIs delivered in ", input$board, " (2008/09 - 2018/19)"), x = "Financial Year", y = "ABIs delivered") +
           theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
                 axis.text.y = element_text(size = 8),
                 axis.title = element_text(size = 9, face = "bold"),
                 title = element_text(size = 10, face = "bold"),
                 legend.text = element_text(size = 8))
       }
-    ) %>%
+    ), mode = "line+markers") %>%
       layout(margin = list(t=75),
              xaxis = list(fixedrange=TRUE), 
              yaxis= list(fixedrange=TRUE)) %>%
@@ -110,10 +117,10 @@ shinyServer(function(input, output, session) {
   
   output$text1 <- renderUI({
     
+    del18_19 <- numeric()
     del17_18 <- numeric()
-    del16_17 <- numeric()
+    tar18_19 <- numeric()
     tar17_18 <- numeric()
-    tar16_17 <- numeric()
     
     if (req(input$board) == "All") {
       list(
@@ -123,48 +130,48 @@ shinyServer(function(input, output, session) {
       ABIs %>%
         group_by(FY) %>%
         summarise(Delivered = sum(Delivered), Target = sum(Target), PercentOfTarget = Delivered/Target*100) %>%
+        filter(FY == "2018/19") %>%
+        select(Delivered) -> del18_19
+      ABIs %>%
+        group_by(FY) %>%
+        summarise(Delivered = sum(Delivered), Target = sum(Target), PercentOfTarget = Delivered/Target*100) %>%
         filter(FY == "2017/18") %>%
         select(Delivered) -> del17_18
       ABIs %>%
         group_by(FY) %>%
         summarise(Delivered = sum(Delivered), Target = sum(Target), PercentOfTarget = Delivered/Target*100) %>%
-        filter(FY == "2016/17") %>%
-        select(Delivered) -> del16_17
+        filter(FY == "2018/19") %>%
+        select(Target) -> tar18_19
       ABIs %>%
         group_by(FY) %>%
         summarise(Delivered = sum(Delivered), Target = sum(Target), PercentOfTarget = Delivered/Target*100) %>%
         filter(FY == "2017/18") %>%
         select(Target) -> tar17_18
-      ABIs %>%
-        group_by(FY) %>%
-        summarise(Delivered = sum(Delivered), Target = sum(Target), PercentOfTarget = Delivered/Target*100) %>%
-        filter(FY == "2016/17") %>%
-        select(Target) -> tar16_17
       
       list(
         tags$h4("Key Points"),
-        tags$ul(tags$li(paste0(input$board, " has ", ifelse(del17_18 > tar17_18, "exceeded", "missed"), " its target by ", round(abs((del17_18/tar17_18*100)-100), digits = 1), "% in FY 2017/18.")),
-                tags$li(paste0("In comparison to FY 2016/17, ", input$board, " has delivered ", ifelse(del17_18/tar17_18 > del16_17/tar16_17, "more", "less"), " ABIs.")))
+        tags$ul(tags$li(paste0(input$board, " has ", ifelse(del18_19 > tar18_19, "exceeded", "missed"), " its target by ", round(abs((del18_19/tar18_19*100)-100), digits = 1), "% in FY 2018/19.")),
+                tags$li(paste0("In comparison to FY 2017/18, ", input$board, " has delivered ", ifelse(del18_19/tar18_19 > del17_18/tar17_18, "more", "less"), " ABIs.")))
       )
       
     } else {
       ABIs %>%
+        filter(Board == input$board, FY == "2018/19") %>%
+        select(Delivered) -> del18_19
+      ABIs %>%
+        filter(Board == input$board, FY == "2018/19") %>%
+        select(Target) -> tar18_19
+      ABIs %>%
         filter(Board == input$board, FY == "2017/18") %>%
         select(Delivered) -> del17_18
       ABIs %>%
         filter(Board == input$board, FY == "2017/18") %>%
         select(Target) -> tar17_18
-      ABIs %>%
-        filter(Board == input$board, FY == "2016/17") %>%
-        select(Delivered) -> del16_17
-      ABIs %>%
-        filter(Board == input$board, FY == "2016/17") %>%
-        select(Target) -> tar16_17
       
       list(
         tags$h4("Key Points"),
-        tags$ul(tags$li(paste0(input$board, " have ", ifelse(del17_18 > tar17_18, "exceeded", "missed"), " their target by ", round(abs((del17_18/tar17_18*100)-100), digits = 1), "% in FY 2017/18.")),
-                tags$li(paste0("In comparison to FY 2016/17, ", input$board, " have delivered ", ifelse(del17_18/tar17_18 > del16_17/tar16_17, "more", "less"), " ABIs.")))
+        tags$ul(tags$li(paste0(input$board, " have ", ifelse(del18_19 > tar18_19, "exceeded", "missed"), " their target by ", round(abs((del18_19/tar18_19*100)-100), digits = 1), "% in FY 2018/19.")),
+                tags$li(paste0("In comparison to FY 2017/18, ", input$board, " have delivered ", ifelse(del18_19/tar18_19 > del17_18/tar17_18, "more", "less"), " ABIs.")))
       )
       
     }
@@ -178,11 +185,13 @@ shinyServer(function(input, output, session) {
       ABIs %>%
         group_by(FY) %>%
         summarise(Delivered = sum(Delivered), Target = sum(Target), `Percent of Target` = round(Delivered/Target*100, digits = 0)) %>%
-        arrange(desc(FY))
+        arrange(desc(FY)) %>% 
+        rename(`Financial Year` = FY)
     } else {
       ABIs %>%
         filter(Board == input$board) %>%
-        arrange(desc(FY))
+        arrange(desc(FY)) %>% 
+        rename(`Financial Year` = FY)
     }},
     options = list(dom = "tif", paging = FALSE), rownames = F))
   
@@ -202,13 +211,13 @@ shinyServer(function(input, output, session) {
         Data2ForPlot %>%
           ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
             geom_bar(stat = "identity", position = "dodge") +
-            scale_fill_brewer(palette = "Blues") +
+            scale_fill_manual(values = bluesISD) +
             geom_hline(yintercept = 100, size = 0.6) +
             annotate("text", x = 15.3, y = 106, label = "100%", size = 3) +
             geom_hline(yintercept = 80, size = 0.6, color="#0066ff") +
             annotate("text", x = 15.3, y = 86, label = "80%", size = 3, color = "#0066ff") +
             theme_minimal() +
-            labs(title = "ABIs delivered overall and in priority settings; as % of standard", x = "NHS Board", y = "Percent [%]") +
+            labs(title = "ABIs delivered overall and in priority settings; as % of standard; 2018/19", x = "NHS Board", y = "Percent [%]") +
             theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
                 axis.text.y = element_text(size = 8),
                 axis.title = element_text(size = 9, face = "bold"),
@@ -220,13 +229,13 @@ shinyServer(function(input, output, session) {
           filter(`NHS Board` == input$board2) %>%
           ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
             geom_bar(stat = "identity", position = "dodge", width = 0.5) +
-            scale_fill_brewer(palette = "Blues") +
+            scale_fill_manual(values = bluesISD) +
             geom_hline(yintercept = 100, size = 0.6) +
             annotate("text", x = 1.46, y = 102.5, label = "100%", size = 3) +
             geom_hline(yintercept = 80, size = 0.6, color = "#0066ff") +
             annotate("text", x = 1.46, y = 82.5, label = "80%", size = 3, color = "#0066ff") +
             theme_minimal() +
-            labs(title = "ABIs delivered overall and in priority settings; as % of standard", x = "NHS Board", y = "Percent [%]") +
+            labs(title = "ABIs delivered overall and in priority settings; as % of standard; 2018/19", x = "NHS Board", y = "Percent [%]") +
             theme(axis.text.x = element_text(size = 8),
                 axis.text.y = element_text(size = 8),
                 axis.title = element_text(size = 9, face = "bold"),
@@ -245,8 +254,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$text2 <- renderUI({
-    del17_18 <- numeric()
-    pri17_18 <- numeric()
+    deliveredTotal <- numeric()
+    primaryDelivered <- numeric()
     
     if (input$board2 == "All") {
       list(
@@ -255,16 +264,16 @@ shinyServer(function(input, output, session) {
     } else {
       Data2 %>%
         filter(`NHS Board` == input$board2) %>%
-        select(`Total delivered as % of standard`) -> del17_18
+        select(`Total delivered as % of standard`) -> deliveredTotal
       
       Data2 %>%
         filter(`NHS Board` == input$board2) %>%
-        select(`Delivered in priority settings as % of standard`) -> pri17_18
+        select(`Delivered in priority settings as % of standard`) -> primaryDelivered
       
       list(
         tags$h4("Key Point:"),
         tags$ul(
-          tags$li(paste0("Out of ", round(del17_18, digits = 1), "% of ABIs delivered overall, ", input$board2, ifelse(input$board2 == "Scotland", " has ", " have "), "delivered ", round(pri17_18, digits = 1), "% of ABIs in Priority Settings."))
+          tags$li(paste0("Out of ", round(deliveredTotal, digits = 1), "% of ABIs delivered overall, ", input$board2, ifelse(input$board2 == "Scotland", " has ", " have "), "delivered ", round(primaryDelivered, digits = 1), "% of ABIs in Priority Settings."))
         )
       )
     }
@@ -296,7 +305,7 @@ shinyServer(function(input, output, session) {
     Data3ForPlot %>%
       ggplot(aes(x = `Financial Year`, y = value, fill = variable)) +
       geom_bar(stat = "identity", position = "stack") +
-      scale_fill_brewer(palette = "Blues") +
+      scale_fill_manual(values = bluesISD) +
       theme_minimal() +
       labs(title = "ABIs delivered across Scotland split by Priority and Wider Settings", x = "Financial Year", y = "") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
@@ -318,9 +327,9 @@ shinyServer(function(input, output, session) {
   
   output$text3 <- renderText({
     HTML("<h4>Key Point:</h4>
-         <p>In 2017/18, 54,711 ABIs were delivered in priority settings nationwide, representing 89.6% of 
-          the number of ABIs specified in the LDP standard. This is 9.6 percentage points more than the 
-          figure for priority settings set out in the standard.</p>
+         <p>In 2018/19, 52,383 ABIs were delivered in priority settings nationwide, representing 85.8% of 
+          the number of ABIs specified in the LDP standard (61,081). This is 5.8 percentage points more than the 
+          figure for priority settings set out in the standard (48,865).</p>
          ")
   })
   
@@ -349,9 +358,9 @@ shinyServer(function(input, output, session) {
       Data4ForPlot %>%
         ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
         geom_bar(stat = "identity", position = "stack") +
-        scale_fill_brewer(palette = "Blues") +
+        scale_fill_manual(values = bluesISD) +
         theme_minimal() +
-        labs(title = "Percentage of ABIs delivered within each setting; by NHS Board (FY 2017/18)", x = "NHS Board", y = "Percent [%]") +
+        labs(title = "Percentage of ABIs delivered within each setting; by NHS Board (FY 2018/19)", x = "NHS Board", y = "Percent [%]") +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
               axis.text.y = element_text(size = 8),
               axis.title = element_text(size = 9, face = "bold"),
@@ -371,8 +380,8 @@ shinyServer(function(input, output, session) {
   output$text4 <- renderText({
     HTML("
          <h4>Key Point:</h4>
-         <p>Of the 81,177 ABIs delivered in 2017/18 on a national level, 50.9% were delivered in Primary Care, 13.5% in Accident & 
-         Emergency, 3.0% in Antenatal Settings and 32.6% in Wider Settings.</p>
+         <p>Of the 80,575 ABIs delivered in 2018/19 on a national level, 49.3% were delivered in Primary Care, 13.6% in Accident & 
+         Emergency, 2.1% in Antenatal Settings and 35.0% in Wider Settings.</p>
          ")
   })
   
@@ -396,7 +405,7 @@ shinyServer(function(input, output, session) {
         ggplot(aes(x = `Wider setting`, y = value, fill = variable)) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
-        scale_fill_brewer(palette = "Blues") +
+        scale_fill_manual(values = bluesISD) +
         theme_minimal() +
         labs(title = "ABIs delivered in Wider Settings", x = "Settings", y = "") +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
@@ -430,7 +439,7 @@ shinyServer(function(input, output, session) {
         ggplot(aes(x = `Wider setting`, y = value, fill = variable)) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
-        scale_fill_brewer(palette = "Blues", labels = c("2015/16", "2016/17", "2017/18")) +
+        scale_fill_manual(values = bluesISD, labels = c("2016/17", "2017/18", "2018/19")) +
         theme_minimal() +
         labs(title = "ABIs delivered in Wider Settings [%]", x = "Settings", y = "") +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
@@ -467,7 +476,7 @@ shinyServer(function(input, output, session) {
         ggplot(aes(x = `Criminal Justice Setting`, y = value, fill = variable)) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
-        scale_fill_brewer(palette = "Blues") +
+        scale_fill_manual(values = bluesISD) +
         theme_minimal() +
         labs(title = "ABIs in Criminal Justice Settings", x = "Criminal Justice Settings", y = "") +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
@@ -499,7 +508,7 @@ shinyServer(function(input, output, session) {
         ggplot(aes(x = `Criminal Justice Setting`, y = value, fill = variable)) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
-        scale_fill_brewer(palette = "Blues", labels = c("2015/16", "2016/17", "2017/18")) +
+        scale_fill_manual(values = bluesISD, labels = c("2016/17", "2017/18", "2018/19")) +
         theme_minimal() +
         labs(title = "ABIs in Criminal Justice Settings [%]", x = "Criminal Justice Settings", y = "") +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
@@ -617,6 +626,48 @@ shinyServer(function(input, output, session) {
     filename = "CriminalJusticeSettings.csv",
     content = function(file) {
       write.csv(Data6, file, row.names = F)
+    }
+  )
+  
+  output$downloadGlossary1 <- downloadHandler(
+    filename = "ABI-Glossary.pdf",
+    content = function(file) {
+      file.copy("www/Glossary-ABIs.pdf", file)
+    }
+  )
+  
+  output$downloadGlossary2 <- downloadHandler(
+    filename = "ABI-Glossary.pdf",
+    content = function(file) {
+      file.copy("www/Glossary-ABIs.pdf", file)
+    }
+  )
+  
+  output$downloadGlossary3 <- downloadHandler(
+    filename = "ABI-Glossary.pdf",
+    content = function(file) {
+      file.copy("www/Glossary-ABIs.pdf", file)
+    }
+  )
+  
+  output$downloadGlossary4 <- downloadHandler(
+    filename = "ABI-Glossary.pdf",
+    content = function(file) {
+      file.copy("www/Glossary-ABIs.pdf", file)
+    }
+  )
+  
+  output$downloadGlossary5 <- downloadHandler(
+    filename = "ABI-Glossary.pdf",
+    content = function(file) {
+      file.copy("www/Glossary-ABIs.pdf", file)
+    }
+  )
+  
+  output$downloadGlossary6 <- downloadHandler(
+    filename = "ABI-Glossary.pdf",
+    content = function(file) {
+      file.copy("www/Glossary-ABIs.pdf", file)
     }
   )
   
