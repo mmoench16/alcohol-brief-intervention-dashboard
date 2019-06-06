@@ -18,6 +18,7 @@ Data3 <- readRDS("Resources/Data/Data3.rds")
 Data4 <- readRDS("Resources/Data/Data4.rds")
 Data5 <- readRDS("Resources/Data/Data5.rds")
 Data6 <- readRDS("Resources/Data/Data6.rds")
+Data7 <- readRDS("Resources/Data/Data7.rds")
 
 # Colour-blind friendly colours, recommended by Tina Fu, http://mkweb.bcgsc.ca/biovis2012/color-blindness-palette.png
 colours15 <- c("#000000", "#004949", "#009292",
@@ -39,12 +40,40 @@ shinyServer(function(input, output, session) {
          It visualises and explores the delivery of ABIs in the context of NHS Scotland's individual Health Boards
          and their respective delivery targets, Priority Settings, Wider Settings and Criminal Justice Settings.
          The dashboard covers ABIs for the financial years 2008/09 to 2018/19.</p>
+
+         <p>An introductory tour on how to use this dashboard can be started by clicking on the
+         <strong>Help</strong> button in the top-right corner.</p>
+         
+         <p>In order to access the full report, summary or Excel workbook, of this publication, 
+          please visit the <a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/index.asp?#2183' target='_blank'>ISD website</a>.</p>
+         
+         <p>The general structure of the dashboard is in line with the accompanying <em>Excel workbook</em>, i.e.:</p>"), 
+    tags$ul(
+      tags$li(actionLink("tab1", "Total ABIs Delivered:"), "Total number of ABIs delivered in comparison with LDP standard, by NHS Board"),
+      tags$li(actionLink("tab2", "ABIs Delivered vs Standard:"), "ABIs delivered against standard, by NHS board; financial year 2018/19"),
+      tags$li(actionLink("tab3", "Priority & Wider Settings:"), "Number of ABIs delivered across Scotland split by Priority and Wider Settings"),
+      tags$li(actionLink("tab4", "All Settings:"), "Number and percentage of ABIs delivered within each Setting; by NHS Board"),
+      tags$li(actionLink("tab5_6", "Wider Settings:"), "Number and percentage of ABIs delivered in Wider Settings in Scotland"),
+      tags$li(actionLink("tab7_8", "Criminal Justice Settings:"), "Number and percentage of ABIs delivered in Criminal Justice Settings in Scotland and by NHS Board")),
+    HTML("<br>
+         <p>If you experience any problems using this dashboard or have further questions relating to the data, please contact us at: <a href='mailto:NSS.isdsubstancemisuse@nhs.net'>NSS.isdsubstancemisuse@nhs.net</a></p>
+         <br>
+         <p><strong>Source:</strong> ISD Scotland</p>
+         <p><strong>Updated:</strong> June 2019</p>")
+  )})
+  
+  output$contentsForTour <- renderUI({list(
+    HTML("<p>This dashboard shows national summary information relating to <strong title='Alcohol Brief Interventions are consultations which aim to help individuals cut down their drinking habits to sensible levels.'
+         style='border-bottom: 1px dotted black;'>Alcohol Brief Interventions</strong> (ABIs) in Scotland.
+         It visualises and explores the delivery of ABIs in the context of NHS Scotland's individual Health Boards
+         and their respective delivery targets, Priority Settings, Wider Settings and Criminal Justice Settings.
+         The dashboard covers ABIs for the financial years 2008/09 to 2018/19.</p>
          
          <p>For more information please view one of the following:</p>
          <ul>
-           <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Report.pdf?877016783' target='_blank'>Full Report</a></li>
-           <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Summary.pdf?877016783' target='_blank'>Summary Report</a></li>
-           <li><a href='http://isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Tables.xlsx'>Download Data Tables (Excel Workbook)</a></li>
+         <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Report.pdf?877016783' target='_blank'>Full Report</a></li>
+         <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Summary.pdf?877016783' target='_blank'>Summary Report</a></li>
+         <li><a href='http://isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Tables.xlsx'>Download Data Tables (Excel Workbook)</a></li>
          </ul>
          
          <p>This dashboard follows the structure given in the aforementioned <em>Data Tables</em>, i.e.:</p>"), 
@@ -60,7 +89,7 @@ shinyServer(function(input, output, session) {
          <br>
          <p><strong>Source:</strong> ISD Scotland</p>
          <p><strong>Updated:</strong> June 2019</p>")
-  )})
+    )})
 
   output$plot1 <- renderPlotly({
     
@@ -112,7 +141,9 @@ shinyServer(function(input, output, session) {
       layout(margin = list(t=75),
              xaxis = list(fixedrange=TRUE), 
              yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$text1 <- renderUI({
@@ -250,7 +281,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$text2 <- renderUI({
@@ -322,7 +355,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$text3 <- renderText({
@@ -374,7 +409,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$text4 <- renderText({
@@ -421,7 +458,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   }))
   
   output$plot6 <- renderPlotly({
@@ -455,7 +494,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$table5_6 <- DT::renderDataTable(DT::datatable({
@@ -492,7 +533,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$plot8 <- renderPlotly({
@@ -524,7 +567,9 @@ shinyServer(function(input, output, session) {
                                y = 100),
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
-      config(displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
   output$table7_8 <- DT::renderDataTable(DT::datatable({
@@ -532,25 +577,41 @@ shinyServer(function(input, output, session) {
   },
     options = list(dom = "tif", paging = FALSE), rownames = F))
   
-  output$glossary <- renderUI({list(
-    HTML(
-      "<h3>Alcohol Brief Intervention</h3>
-       <p>Alcohol Brief Intervention (ABI): National guidance describes an ABI as a short, evidence-based, structured conversation about alcohol consumption with a patient/client that seeks in a non-confrontational way to motivate and support the individual to think about and/or plan a change in their drinking behaviour in order to reduce their consumption and/or their risk of harm.</p>
-       <h3>ABI Screening</h3>
-       <p>A structured conversation focused on obtaining an accurate picture of the client’s alcohol consumption to assess whether they are suitable for an ABI, whether they should be signposted to another service, or if no action is required. Screening tools appropriate to specific settings provide an objective and validated way of assessing whether a client is a hazardous, harmful or a dependent drinker. Screening is an important part of delivering ABIs and this alone may help the client recognise that they have a problem and start the process of thinking about change, or provide the motivation to change.</p>
-       <h3>HEAT target/standard</h3>
-       <p>HEAT targets and standards are set by the Scottish Government to measure NHSScotland's performance towards delivery of the Scottish Government's Purpose and National Outcomes; and NHSScotland's Quality Ambitions. The HEAT targets are grouped into 4 priorities: (1) Health Improvement for the people of Scotland; (2) Efficiency and Governance Improvements; (3) Access to Services; and (4) Treatment Appropriate to Individuals. See the <a href=\"https://www2.gov.scot/About/Performance/scotPerforms/NHSScotlandperformance\">Scotland Performs website</a>.</p>
-       <h3>LDP Standard</h3>
-       <p>For 2017/18 ABI delivery was formally linked to the NHS Scotland Local Delivery Plan (LDP) as an LDP standard. The LDP Standards replaced the system of HEAT targets and Standards with the vast majority of LDP Standards being former HEAT targets. See the <a href=\"https://www2.gov.scot/About/Performance/scotPerforms/NHSScotlandperformance\">Scotland Performs website</a>.</p>
-       <h3>Primary care ABI interventions</h3>
-       <p>Interventions delivered by doctors and nurses in the general practice setting. Interventions associated with health promotion checks (such as Keep Well) conducted out with the practice, but delivered by doctors and nurses in line with the guidance, can be considered as part of the standard.</p>
-       <h3>A&E ABI interventions</h3>
-       <p>Interventions delivered by doctors and nurses as part of a patient’s care initiated in an attendance at Accident & emergency (A&E), minor injury unit/department and community-based minor injury clinic. The intervention can be delivered in the A&E department, minor injury unit/department or community-based minor injury clinic as part of the clinical consultation. It may also be delivered during follow on care from an A&E or minor injury attendance in the acute setting, such as an outpatient fracture clinic or in a hospital ward following an admission from A&E.</p>
-       <h3>Antenatal ABI interventions</h3>
-       <p>Antenatal care delivered by midwives or obstetricians in a primary care, community or hospital based setting. It is anticipated that the intervention will be delivered as part of the booking appointment. Only interventions delivered based on in-pregnancy alcohol consumption should be considered as part of the standard.</p>
-      "
-    )
-  )})
+  output$plot9 <- renderPlotly({
+    DataForPlot9 <- Data7 %>% 
+      filter(`NHS Board` != "Total") %>% 
+      select(-Total) %>% 
+      melt(id.vars = "NHS Board")
+      
+    ggplotly(
+      DataForPlot9 %>% 
+        ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
+        geom_bar(stat = "identity") +
+        scale_fill_manual(values = bluesISD) +
+        theme_minimal() +
+        labs(title = "ABIs delivered in Criminal Justice settings; by NHS Board for 2018/19", x = "NHS Board", y = "") +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+              axis.text.y = element_text(size = 8),
+              axis.title = element_text(size = 9, face = "bold"),
+              title = element_text(size = 10, face = "bold"),
+              legend.text = element_text(size = 8),
+              legend.title = element_blank())
+    ) %>% layout(margin = list(t=75),
+            legend = list(orientation = "h",
+                          xanchor = "center",
+                          x = 0.475,
+                          y = 100),
+            xaxis = list(fixedrange=TRUE), 
+            yaxis= list(fixedrange=TRUE)) %>%
+      config(displayModeBar = TRUE,
+             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+  })
+  
+  output$table9 <- DT::renderDataTable(DT::datatable({
+    Data7
+  }, 
+    options = list(dom = "tif", paging = FALSE), rownames = F))
   
   # Download handlers
   
@@ -702,6 +763,27 @@ shinyServer(function(input, output, session) {
   observeEvent(input$actB5, {toggle("table5_6")})
   
   observeEvent(input$actB6, {toggle("table7_8")})
+  
+  observeEvent(input$actB7, {toggle("table9")})
+  
+  observeEvent(input$cc1, {toggle("chc1")})
+  
+  observeEvent(input$cc2, {toggle("chc2")})
+  
+  observeEvent(input$cc3, {toggle("chc3")})
+  
+  observeEvent(input$cc4, {toggle("chc4")})
+  
+  observeEvent(input$cc5, {toggle("chc5")})
+  
+  observeEvent(input$cc6, {toggle("chc6")})
+  
+  # Observer for Intro tour
+  
+  observeEvent(input$tabsetPanel, {if (input$tabsetPanel == "help")
+    {
+    introjs(session, events = list(onbeforechange = readCallback("switchTabs")))
+  }})
   
   # Navigation from Contents page
   

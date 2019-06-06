@@ -108,3 +108,12 @@ Data6 <- Data6 %>%
 
 saveRDS(Data6, "Resources/Data/Data6.rds")
 
+# - Table 7 - Number of ABIs delivered in Criminal Justice settings;
+#             by NHS Board for 2018/19
+
+Data7 <- read_excel("Resources/Data/2019-06-25-AlcoholBriefInterventions-Tables-WIP.xlsx", range = "Table7,8&9!A45:F61")
+
+Data7 <- Data7 %>% 
+  na.omit()
+
+saveRDS(Data7, "Resources/Data/Data7.rds")
