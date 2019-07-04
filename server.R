@@ -12,6 +12,8 @@ library(plotly)
 library(scales)
 library(shinyjs)
 
+##################################################
+
 ABIs <- readRDS("Resources/Data/TidyABIs.rds")
 Data2 <- readRDS("Resources/Data/Data2.rds")
 Data3 <- readRDS("Resources/Data/Data3.rds")
@@ -19,6 +21,8 @@ Data4 <- readRDS("Resources/Data/Data4.rds")
 Data5 <- readRDS("Resources/Data/Data5.rds")
 Data6 <- readRDS("Resources/Data/Data6.rds")
 Data7 <- readRDS("Resources/Data/Data7.rds")
+
+##################################################
 
 # Colour-blind friendly colours, recommended by Tina Fu, http://mkweb.bcgsc.ca/biovis2012/color-blindness-palette.png
 colours15 <- c("#000000", "#004949", "#009292",
@@ -41,16 +45,19 @@ shinyServer(function(input, output, session) {
          and their respective delivery targets, Priority Settings, Wider Settings and Criminal Justice Settings.
          The dashboard covers ABIs for the financial years 2008/09 to 2018/19.</p>
 
-         <p>An introductory tour on how to use this dashboard can be started by clicking on the
-         <strong>Help</strong> button in the top-right corner.</p>
-         
-         <p>In order to access the full report, summary or Excel workbook, of this publication, 
-          please visit the <a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/index.asp?#2183' target='_blank'>ISD website</a>.</p>
+         <p>In order to navigate the dashboard, please click on the tabs above (e.g. <em>Total ABIs Delivered</em>).</p>
+
+         <p>For more information on the latest ABI publication, please view one of the following:</p>
+          <ul>
+            <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2019-06-25/2019-06-25-AlcoholBriefInterventions-Report.pdf' target='_blank'>Full Report</a></li>
+            <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2019-06-25/2019-06-25-AlcoholBriefInterventions-Summary.pdf' target='_blank'>Summary Report</a></li>
+            <li><a href='http://isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2019-06-25/2019-06-25-AlcoholBriefInterventions-Tables.xlsx'>Download Data Tables (Excel Workbook)</a></li>
+          </ul>
          
          <p>The general structure of the dashboard is in line with the accompanying <em>Excel workbook</em>, i.e.:</p>"), 
     tags$ul(
       tags$li(actionLink("tab1", "Total ABIs Delivered:"), "Total number of ABIs delivered in comparison with LDP standard, by NHS Board"),
-      tags$li(actionLink("tab2", "ABIs Delivered vs Standard:"), "ABIs delivered against standard, by NHS board; financial year 2018/19"),
+      tags$li(actionLink("tab2", "ABIs Delivered compared to Standard:"), "ABIs delivered against standard, by NHS board; financial year 2018/19"),
       tags$li(actionLink("tab3", "Priority & Wider Settings:"), "Number of ABIs delivered across Scotland split by Priority and Wider Settings"),
       tags$li(actionLink("tab4", "All Settings:"), "Number and percentage of ABIs delivered within each Setting; by NHS Board"),
       tags$li(actionLink("tab5_6", "Wider Settings:"), "Number and percentage of ABIs delivered in Wider Settings in Scotland"),
@@ -61,35 +68,6 @@ shinyServer(function(input, output, session) {
          <p><strong>Source:</strong> ISD Scotland</p>
          <p><strong>Updated:</strong> June 2019</p>")
   )})
-  
-  output$contentsForTour <- renderUI({list(
-    HTML("<p>This dashboard shows national summary information relating to <strong title='Alcohol Brief Interventions are consultations which aim to help individuals cut down their drinking habits to sensible levels.'
-         style='border-bottom: 1px dotted black;'>Alcohol Brief Interventions</strong> (ABIs) in Scotland.
-         It visualises and explores the delivery of ABIs in the context of NHS Scotland's individual Health Boards
-         and their respective delivery targets, Priority Settings, Wider Settings and Criminal Justice Settings.
-         The dashboard covers ABIs for the financial years 2008/09 to 2018/19.</p>
-         
-         <p>For more information please view one of the following:</p>
-         <ul>
-         <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Report.pdf?877016783' target='_blank'>Full Report</a></li>
-         <li><a href='https://www.isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Summary.pdf?877016783' target='_blank'>Summary Report</a></li>
-         <li><a href='http://isdscotland.org/Health-Topics/Drugs-and-Alcohol-Misuse/Publications/2018-06-26/2018-06-26-AlcoholBriefInterventions-Tables.xlsx'>Download Data Tables (Excel Workbook)</a></li>
-         </ul>
-         
-         <p>This dashboard follows the structure given in the aforementioned <em>Data Tables</em>, i.e.:</p>"), 
-    tags$ul(
-      tags$li(actionLink("tab1", "Total ABIs Delivered:"), "Total number of ABIs delivered in comparison with LDP standard, by NHS Board"),
-      tags$li(actionLink("tab2", "ABIs Delivered vs Standard:"), "ABIs delivered against standard, by NHS board; financial year 2018/19"),
-      tags$li(actionLink("tab3", "Priority & Wider Settings:"), "Number of ABIs delivered across Scotland split by Priority and Wider Settings"),
-      tags$li(actionLink("tab4", "All Settings:"), "Number and percentage of ABIs delivered within each Setting; by NHS Board"),
-      tags$li(actionLink("tab5_6", "Wider Settings:"), "Number and percentage of ABIs delivered in Wider Settings in Scotland"),
-      tags$li(actionLink("tab7_8", "Criminal Justice Settings:"), "Number and percentage of ABIs delivered in Criminal Justice Settings in Scotland and by NHS Board")),
-    HTML("<br>
-         <p>If you experience any problems using this dashboard or have further questions relating to the data, please contact us at: <a href='mailto:NSS.isdsubstancemisuse@nhs.net'>NSS.isdsubstancemisuse@nhs.net</a></p>
-         <br>
-         <p><strong>Source:</strong> ISD Scotland</p>
-         <p><strong>Updated:</strong> June 2019</p>")
-    )})
 
   output$plot1 <- renderPlotly({
     
@@ -97,7 +75,9 @@ shinyServer(function(input, output, session) {
       if (req(input$board) == "All") {
         
         ABIs %>%
-          ggplot(aes(x = FY, y = Delivered, color = Board, group = Board)) +
+          ggplot(aes(x = FY, y = Delivered, color = Board, group = Board, text = paste0("Financial Year: ", FY,
+                                                                                        "<br>ABIs Delivered: ", Delivered,
+                                                                                        "<br>NHS Board: ", Board))) +
             geom_line(size = 0.5) +
             scale_y_log10() +
             scale_color_manual(values = colours15) +
@@ -113,7 +93,9 @@ shinyServer(function(input, output, session) {
         ABIs %>%
           group_by(FY) %>%
           summarise(SumDelivered = sum(Delivered)) %>%
-          ggplot(aes(x = FY, y = SumDelivered, group = 1)) +
+          ggplot(aes(x = FY, y = SumDelivered, group = 1, text = paste0("Financial Year: ", FY,
+                                                                        "<br>ABIs Delivered: ", SumDelivered,
+                                                                        "<br>Scotland"))) +
             geom_line(size = 1, color="#004785") + 
             theme_minimal() +
             scale_x_discrete(expand = c(0.03,0.03)) +
@@ -126,7 +108,9 @@ shinyServer(function(input, output, session) {
       } else {
         ABIs %>%
           filter(Board == input$board) %>%
-          ggplot(aes(x = FY, y = Delivered, group = Board)) +
+          ggplot(aes(x = FY, y = Delivered, group = Board, text = paste0("Financial Year: ", FY,
+                                                                         "<br>ABIs Delivered: ", Delivered,
+                                                                         "<br>NHS Board: ", Board))) +
           geom_line(size = 1, color="#004785") +
           theme_minimal() +
           scale_x_discrete(expand = c(0.03,0.03)) +
@@ -136,13 +120,13 @@ shinyServer(function(input, output, session) {
                 axis.title = element_text(size = 9, face = "bold"),
                 title = element_text(size = 10, face = "bold"),
                 legend.text = element_text(size = 8))
-      }
+      }, tooltip = "text"
     ), mode = "line+markers") %>%
       layout(margin = list(t=75),
              xaxis = list(fixedrange=TRUE), 
              yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
@@ -215,7 +199,7 @@ shinyServer(function(input, output, session) {
     } else if (req(input$board) == "Scotland") {
       ABIs %>%
         group_by(FY) %>%
-        summarise(Delivered = sum(Delivered), Target = sum(Target), `Percent of Target` = round(Delivered/Target*100, digits = 0)) %>%
+        summarise(Delivered = sum(Delivered), Target = sum(Target), `Percent of Target` = round(Delivered/Target*100, digits = 1)) %>%
         arrange(desc(FY)) %>% 
         rename(`Financial Year` = FY)
     } else {
@@ -240,7 +224,9 @@ shinyServer(function(input, output, session) {
     ggplotly(
       if (input$board2 == "All") {
         Data2ForPlot %>%
-          ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
+          ggplot(aes(x = `NHS Board`, y = value, fill = variable, text = paste0("NHS Board: ", `NHS Board`,
+                                                                               "<br>Value: ", value, "%",
+                                                                               "<br>Variable: ", variable))) +
             geom_bar(stat = "identity", position = "dodge") +
             scale_fill_manual(values = bluesISD) +
             geom_hline(yintercept = 100, size = 0.6) +
@@ -258,7 +244,9 @@ shinyServer(function(input, output, session) {
       } else {
         Data2ForPlot %>%
           filter(`NHS Board` == input$board2) %>%
-          ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
+          ggplot(aes(x = `NHS Board`, y = value, fill = variable, text = paste0("NHS Board: ", `NHS Board`,
+                                                                                "<br>Value: ", value, "%",
+                                                                                "<br>Variable: ", variable))) +
             geom_bar(stat = "identity", position = "dodge", width = 0.5) +
             scale_fill_manual(values = bluesISD) +
             geom_hline(yintercept = 100, size = 0.6) +
@@ -273,8 +261,9 @@ shinyServer(function(input, output, session) {
                 title = element_text(size = 10, face = "bold"),
                 legend.text = element_text(size = 8),
                 legend.title = element_blank())
-      }
-    ) %>% layout(margin = list(t=75),
+      }, tooltip = "text"
+    ) %>%  
+      layout(margin = list(t=75),
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.475,
@@ -282,7 +271,7 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
@@ -336,7 +325,9 @@ shinyServer(function(input, output, session) {
     
     ggplotly(
     Data3ForPlot %>%
-      ggplot(aes(x = `Financial Year`, y = value, fill = variable)) +
+      ggplot(aes(x = `Financial Year`, y = value, fill = variable, text = paste0("Financial Year: ", `Financial Year`,
+                                                                                 "<br>Value: ", value,
+                                                                                 "<br>Variable: ", variable))) +
       geom_bar(stat = "identity", position = "stack") +
       scale_fill_manual(values = bluesISD) +
       theme_minimal() +
@@ -348,7 +339,7 @@ shinyServer(function(input, output, session) {
             legend.position = c(0.9,0.9),
             legend.text = element_text(size = 8),
             legend.title = element_blank())
-    ) %>% layout(margin = list(t=75), 
+    , tooltip = "text") %>% layout(margin = list(t=75), 
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.475,
@@ -356,7 +347,7 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
@@ -391,7 +382,9 @@ shinyServer(function(input, output, session) {
     
     ggplotly(
       Data4ForPlot %>%
-        ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
+        ggplot(aes(x = `NHS Board`, y = value, fill = variable, text = paste0("NHS Board: ", `NHS Board`,
+                                                                              "<br>Value: ", value, "%",
+                                                                              "<br>Variable: ", variable))) +
         geom_bar(stat = "identity", position = "stack") +
         scale_fill_manual(values = bluesISD) +
         theme_minimal() +
@@ -402,7 +395,8 @@ shinyServer(function(input, output, session) {
               title = element_text(size = 10, face = "bold"),
               legend.text = element_text(size = 8),
               legend.title = element_blank())
-    ) %>% layout(margin = list(t=75), 
+    , tooltip = "text") %>% 
+      layout(margin = list(t=75), 
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.475, 
@@ -410,7 +404,7 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
@@ -439,7 +433,9 @@ shinyServer(function(input, output, session) {
                  "NHS Settings", "Other")
     ggplotly(
       Data5ForPlot %>%
-        ggplot(aes(x = `Wider setting`, y = value, fill = variable)) +
+        ggplot(aes(x = `Wider setting`, y = value, fill = variable, text = paste0("Wider Setting: ", `Wider setting`,
+                                                                                  "<br>ABIs Delivered: ", value,
+                                                                                  "<br>Financial Year: ", variable))) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
         scale_fill_manual(values = bluesISD) +
@@ -451,7 +447,7 @@ shinyServer(function(input, output, session) {
               title = element_text(size = 10, face = "bold"),
               legend.text = element_text(size = 8),
               legend.title = element_blank())
-    ) %>% layout(margin = list(t=75),
+    , tooltip = "text") %>% layout(margin = list(t=75),
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.45,
@@ -459,7 +455,7 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   }))
   
@@ -475,7 +471,9 @@ shinyServer(function(input, output, session) {
     
     ggplotly(
       Data6ForPlot %>%
-        ggplot(aes(x = `Wider setting`, y = value, fill = variable)) +
+        ggplot(aes(x = `Wider setting`, y = value, fill = variable, text = paste0("Wider Setting: ", `Wider setting`,
+                                                                                  "<br>Percent of ABIs Delivered: ", value, "%",
+                                                                                  "<br>Financial Year: ", variable))) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
         scale_fill_manual(values = bluesISD, labels = c("2016/17", "2017/18", "2018/19")) +
@@ -487,7 +485,7 @@ shinyServer(function(input, output, session) {
               title = element_text(size = 10, face = "bold"),
               legend.text = element_text(size = 8),
               legend.title = element_blank())
-    ) %>% layout(margin = list(t=75),
+    , tooltip = "text") %>% layout(margin = list(t=75),
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.45,
@@ -495,8 +493,13 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+  })
+  
+  output$text5_6 <- renderUI({
+    p("Please note: NHS Grampian provided aggregate figures for Wider Settings. 
+      Therefore ABIs delivered in NHS Grampian in Wider Settings are counted in the 'Other' category.", style = "font-size: 9px; text-align: center;")
   })
   
   output$table5_6 <- DT::renderDataTable(DT::datatable({
@@ -514,7 +517,9 @@ shinyServer(function(input, output, session) {
     
     ggplotly(
       Data7ForPlot %>%
-        ggplot(aes(x = `Criminal Justice Setting`, y = value, fill = variable)) +
+        ggplot(aes(x = `Criminal Justice Setting`, y = value, fill = variable, text = paste0("Criminal Justice Setting: ", `Criminal Justice Setting`,
+                                                                                             "<br>ABIs Delivered: ", value,
+                                                                                             "<br>Financial Year: ", variable))) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
         scale_fill_manual(values = bluesISD) +
@@ -526,7 +531,7 @@ shinyServer(function(input, output, session) {
               title = element_text(size = 10, face = "bold"),
               legend.text = element_text(size = 8),
               legend.title = element_blank())
-    ) %>% layout(margin = list(t=75),
+    , tooltip = "text") %>% layout(margin = list(t=75),
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.45,
@@ -534,7 +539,7 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
   })
   
@@ -548,7 +553,9 @@ shinyServer(function(input, output, session) {
     
     ggplotly(
       Data8ForPlot %>%
-        ggplot(aes(x = `Criminal Justice Setting`, y = value, fill = variable)) +
+        ggplot(aes(x = `Criminal Justice Setting`, y = value, fill = variable, text = paste0("Criminal Jusice Setting: ", `Criminal Justice Setting`,
+                                                                                             "<br>Percent of ABIs Delivered: ", value, "%",
+                                                                                             "<br>Financial Year: ", variable))) +
         geom_bar(stat = "identity", position = "dodge") +
         scale_x_discrete(labels = xlabels) +
         scale_fill_manual(values = bluesISD, labels = c("2016/17", "2017/18", "2018/19")) +
@@ -560,7 +567,7 @@ shinyServer(function(input, output, session) {
               title = element_text(size = 10, face = "bold"),
               legend.text = element_text(size = 8),
               legend.title = element_blank())
-    ) %>% layout(margin = list(t=75),
+    , tooltip = "text") %>% layout(margin = list(t=75),
                  legend = list(orientation = "h",
                                xanchor = "center",
                                x = 0.45,
@@ -568,8 +575,13 @@ shinyServer(function(input, output, session) {
                  xaxis = list(fixedrange=TRUE), 
                  yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+  })
+  
+  output$text7_8 <- renderUI({
+    p("Please note: NHS Grampian provided only aggregate figures for Wider Settings. 
+      Therefore, NHS Grampian was omitted for Criminal Justice figures.", style = "font-size: 9px; text-align: center;")
   })
   
   output$table7_8 <- DT::renderDataTable(DT::datatable({
@@ -585,7 +597,9 @@ shinyServer(function(input, output, session) {
       
     ggplotly(
       DataForPlot9 %>% 
-        ggplot(aes(x = `NHS Board`, y = value, fill = variable)) +
+        ggplot(aes(x = `NHS Board`, y = value, fill = variable, text = paste0("NHS Board: ", `NHS Board`,
+                                                                              "<br>ABIs Delivered: ", value,
+                                                                              "<br>Criminal Justice Setting: ", variable))) +
         geom_bar(stat = "identity") +
         scale_fill_manual(values = bluesISD) +
         theme_minimal() +
@@ -596,7 +610,7 @@ shinyServer(function(input, output, session) {
               title = element_text(size = 10, face = "bold"),
               legend.text = element_text(size = 8),
               legend.title = element_blank())
-    ) %>% layout(margin = list(t=75),
+    , tooltip = "text") %>% layout(margin = list(t=75),
             legend = list(orientation = "h",
                           xanchor = "center",
                           x = 0.475,
@@ -604,8 +618,14 @@ shinyServer(function(input, output, session) {
             xaxis = list(fixedrange=TRUE), 
             yaxis= list(fixedrange=TRUE)) %>%
       config(displayModeBar = TRUE,
-             modeBarButtons = list(list("toImage"), list("zoom2d"), list("pan2d"), list("resetScale2d")),
+             modeBarButtons = list(list("toImage")),
              displaylogo=FALSE, collaborate=FALSE, editable=FALSE)
+  })
+  
+  output$text9 <- renderUI({
+    p("Please note: NHS Grampian provided only aggregate figures for Wider Settings. 
+      Therefore, NHS Grampian was omitted for Criminal Justice figures. 
+      Also, there are no prisons in NHS Borders, NHS Fife, NHS Orkney, NHS Shetland, NHS Western Isles.", style = "font-size: 9px; text-align: center;")
   })
   
   output$table9 <- DT::renderDataTable(DT::datatable({
@@ -778,18 +798,11 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$cc6, {toggle("chc6")})
   
-  # Observer for Intro tour
-  
-  observeEvent(input$tabsetPanel, {if (input$tabsetPanel == "help")
-    {
-    introjs(session, events = list(onbeforechange = readCallback("switchTabs")))
-  }})
-  
   # Navigation from Contents page
   
   observeEvent(input$tab1, {updateTabsetPanel(session, "tabsetPanel", "Total ABIs Delivered")})
   
-  observeEvent(input$tab2, {updateTabsetPanel(session, "tabsetPanel", "ABIs Delivered vs Standard")})
+  observeEvent(input$tab2, {updateTabsetPanel(session, "tabsetPanel", "ABIs Delivered compared to Standard")})
   
   observeEvent(input$tab3, {updateTabsetPanel(session, "tabsetPanel", "Priority & Wider Settings")})
   

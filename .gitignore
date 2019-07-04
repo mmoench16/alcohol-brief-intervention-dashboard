@@ -14,3 +14,4 @@ rsconnect/
 ui1.R
 www/logos.gif
 .Rproj.user
+DeployingShinyApp.R

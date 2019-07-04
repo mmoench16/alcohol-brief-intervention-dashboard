@@ -25,7 +25,7 @@ ABIsTarget <- ABIsTarget %>%
 
 ABIs <- ABIsDelivered %>%
   add_column(Target = ABIsTarget$Target) %>%
-  mutate(`Percent Of Target` = ceiling((Delivered / Target) * 100))
+  mutate(`Percent Of Target` = round((Delivered / Target) * 100, digits = 1))
 
 ABIs$Board <- str_replace(ABIs$Board, "NHS ", "")
 ABIs$Board <- str_replace(ABIs$Board, "Tayside2", "Tayside")
@@ -45,8 +45,8 @@ Data2 <- read_excel("Resources/Data/2019-06-25-AlcoholBriefInterventions-Tables-
 Data2 <- Data2[-2,]
 Data2 <- Data2 %>%
   mutate(Difference = `Total number delivered` - `LDP standard1`,
-         `Total delivered as % of standard` = round(`Total number delivered`/`LDP standard1` * 100, digits = 0),
-         `Delivered in priority settings as % of standard` = round(`Number delivered in priority settings`/`LDP standard1`*100, digits = 0)
+         `Total delivered as % of standard` = round(`Total number delivered`/`LDP standard1` * 100, digits = 1),
+         `Delivered in priority settings as % of standard` = round(`Number delivered in priority settings`/`LDP standard1`*100, digits = 1)
          ) %>%
   rename(`LDP standard` = `LDP standard1`)
 
@@ -117,3 +117,64 @@ Data7 <- Data7 %>%
   na.omit()
 
 saveRDS(Data7, "Resources/Data/Data7.rds")
+
+# Dummy Data for PHI Pubs Team
+
+dd1 <- ABIs %>% 
+  mutate(Delivered = sample(1250:15000, 126),
+         Target = sample(2000:12000, 126),
+         `Percent Of Target` = sample(50:150, 126, replace = T))
+saveRDS(dd1, "Resources/Data/DummyData1.rds")
+
+dd2 <- Data2 %>% 
+  mutate(`Number delivered in priority settings` = sample(500:10000, 15),
+         `Number delivered in wider settings` = sample(500:10000, 15),
+         `Total number delivered` = sample(500:10000, 15),
+         `LDP standard` = sample(500:10000, 15),
+         Difference = sample(500:10000, 15),
+         `Total delivered as % of standard` = sample(50:150, 15, replace = T),
+         `Delivered in priority settings as % of standard` = sample(50:150, 15, replace = T))
+saveRDS(dd1, "Resources/Data/DummyData2.rds")
+
+dd3 <- Data3 %>% 
+  mutate(`Priority Settings` = sample(30000:60000, 11),
+         `Wider Settings` = sample(10000:30000, 11),
+         Total = sample(60000:80000, 11))
+saveRDS(dd3, "Resources/Data/DummyData3.rds")
+
+dd4 <- Data4 %>% 
+  mutate(`Primary Care` = sample(50:7000, 15),
+         `A&E` = sample(10:2500, 15),
+         Antenatal = sample(2:1000, 15),
+         `Wider Settings` = sample(50:7000, 15),
+         `Primary Care [%]` = sample(60:88, 15, replace = T),
+         `A&E [%]` = sample(10:20, 15, replace = T),
+         `Antenatal [%]` = sample(1:5, 15, replace = T),
+         `Wider Settings [%]` = sample(20:45, 15, replace = T))
+saveRDS(dd4, "Resources/Data/DummyData4.rds")
+
+dd5 <- Data5 %>% 
+  mutate(`2016/17` = sample(500:10000,6),
+         `2017/18` = sample(500:10000,6),
+         `2018/19` = sample(500:10000,6),
+         `2016/17 [%]` = sample(5:40, 6, replace = T),
+         `2017/18 [%]` = sample(5:40, 6, replace = T),
+         `2018/19 [%]` = sample(5:40, 6, replace = T))
+saveRDS(dd5, "Resources/Data/DummyData5.rds")
+
+dd6 <- Data6 %>% 
+  mutate(`2016/17` = sample(500:10000,5),
+         `2017/18` = sample(500:10000,5),
+         `2018/19` = sample(500:10000,5),
+         `2016/17 [%]` = sample(5:40, 5, replace = T),
+         `2017/18 [%]` = sample(5:40, 5, replace = T),
+         `2018/19 [%]` = sample(5:40, 5, replace = T))
+saveRDS(dd6, "Resources/Data/DummyData6.rds")
+
+dd7 <- Data7 %>% 
+  mutate(`Custody Suites` = sample(0:400, 14, replace = T),
+         Prisons = sample(0:400, 14, replace = T),
+         `Social Work` = sample(0:400, 14, replace = T),
+         Police = sample(0:20, 14, replace = T),
+         Total = sample(300:1000, 14, replace = T))
+saveRDS(dd7, "Resources/Data/DummyData7.rds")
